@@ -23,8 +23,15 @@ cat > /usr/share/nginx/html/index.html <<HTML
 </html>
 HTML
 
-mysql -h ${RDS_ENDPOINT} -u admin -p${DB_PASSWORD} -e "SHOW DATABASES;" > /tmp/db-test.log 2>&1 || true
-EOF
+for i in {1..30}; do
+  mysql -h ${RDS_ENDPOINT} -u admin -p${DB_PASSWORD} -e "SHOW DATABASES;" > /tmp/db-test.log 2>&1
+  if [ \$? -eq 0 ]; then
+    echo "Database connection successful" >> /tmp/db-test.log
+    break
+  fi
+  echo "Retry \$i: waiting for database..." >> /tmp/db-test.log
+  sleep 30
+done
 
 cat > launch-template.json <<EOF
 {

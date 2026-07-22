@@ -11,6 +11,9 @@ aws elbv2 create-listener --load-balancer-arn $ALB_ARN --protocol HTTP --port 80
 
 aws autoscaling create-auto-scaling-group --auto-scaling-group-name cloudmart-asg-$SUFFIX --launch-template LaunchTemplateName=cloudmart-web-template-$SUFFIX,Version='$Latest' --min-size 1 --max-size 3 --desired-capacity 2 --vpc-zone-identifier "$SUBNET_A,$SUBNET_B" --target-group-arns $TG_ARN --health-check-type ELB --health-check-grace-period 300 --tags "Key=Name,Value=cloudmart-web,PropagateAtLaunch=true"
 
+echo "Waiting for auto scaling service-linked role..."
+sleep 30
+
 cat > scaling-policy.json <<EOF
 {
   "PredefinedMetricSpecification": { "PredefinedMetricType": "ASGAverageCPUUtilization" },

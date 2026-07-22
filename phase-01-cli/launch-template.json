@@ -1,0 +1,10 @@
+{
+  "ImageId": "ami-0ce8fc9de96bb8809",
+  "InstanceType": "t3.micro",
+  "IamInstanceProfile": { "Name": "cloudmart-ec2-profile-1784726779" },
+  "SecurityGroupIds": ["sg-0b71b8e9aba99ab62"],
+  "UserData": "IyEvYmluL2Jhc2gKZG5mIHVwZGF0ZSAteQpkbmYgaW5zdGFsbCAteSBuZ2lueCBtYXJpYWRiMTA1CnN5c3RlbWN0bCBzdGFydCBuZ2lueApzeXN0ZW1jdGwgZW5hYmxlIG5naW54CgpjYXQgPiAvdXNyL3NoYXJlL25naW54L2h0bWwvaW5kZXguaHRtbCA8PEhUTUwKPGh0bWw+CiAgPGJvZHk+CiAgICA8aDE+V2VsY29tZSB0byBDbG91ZE1hcnQ8L2gxPgogICAgPHA+U2VydmVyOiAkKGhvc3RuYW1lIC1mKTwvcD4KICAgIDxwPlMzIGJ1Y2tldDogY2xvdWRtYXJ0LXN0YXRpYy0xNzg0NzI2Nzc5PC9wPgogICAgPHA+REIgZW5kcG9pbnQ6IE5vbmU8L3A+CiAgPC9ib2R5Pgo8L2h0bWw+CkhUTUwKCm15c3FsIC1oIE5vbmUgLXUgYWRtaW4gLXA1THBCdXM5RTVGS0F5Uzc4QWN3TkxuVkVPb1pCbjZWTSAtZSAiU0hPVyBEQVRBQkFTRVM7IiA+IC90bXAvZGItdGVzdC5sb2cgMj4mMSB8fCB0cnVlCg==",
+  "TagSpecifications": [
+    { "ResourceType": "instance", "Tags": [{ "Key": "Name", "Value": "cloudmart-web" }] }
+  ]
+}

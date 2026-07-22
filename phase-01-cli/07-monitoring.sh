@@ -1,13 +1,19 @@
 #!/bin/bash
 set -e
 
+if grep -q "^DASHBOARD_NAME=" ../resources.env 2>/dev/null; then
+  echo "ERROR: monitoring already provisioned. Run ./09-cleanup.sh first."
+  exit 1
+fi
+
 source ../resources.env
 
 ASG_NAME=cloudmart-asg-$SUFFIX
+DASHBOARD_NAME=CloudMart-$SUFFIX
 
 aws cloudwatch put-metric-alarm --alarm-name cloudmart-high-cpu-$SUFFIX --metric-name CPUUtilization --namespace AWS/EC2 --statistic Average --period 300 --threshold 70 --comparison-operator GreaterThanThreshold --dimensions Name=AutoScalingGroupName,Value=$ASG_NAME --evaluation-periods 2
 
-aws cloudwatch put-dashboard --dashboard-name CloudMart-$SUFFIX --dashboard-body '{
+aws cloudwatch put-dashboard --dashboard-name $DASHBOARD_NAME --dashboard-body '{
   "widgets": [
     {
       "type": "metric",
@@ -25,3 +31,7 @@ aws cloudwatch put-dashboard --dashboard-name CloudMart-$SUFFIX --dashboard-body
     }
   ]
 }'
+
+cat >> ../resources.env <<EOF
+DASHBOARD_NAME=$DASHBOARD_NAME
+EOF

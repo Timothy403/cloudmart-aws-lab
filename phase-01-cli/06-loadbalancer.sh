@@ -1,11 +1,21 @@
 #!/bin/bash
 set -e
 
+if grep -q "^ALB_ARN=" ../resources.env 2>/dev/null; then
+  echo "ERROR: load balancer already provisioned. Run ./09-cleanup.sh first."
+  exit 1
+fi
+
 source ../resources.env
 
 TG_ARN=$(aws elbv2 create-target-group --name cloudmart-tg-$SUFFIX --protocol HTTP --port 80 --vpc-id $VPC_ID --target-type instance --health-check-path / --query 'TargetGroups[0].TargetGroupArn' --output text)
 
 ALB_ARN=$(aws elbv2 create-load-balancer --name cloudmart-alb-$SUFFIX --subnets $SUBNET_A $SUBNET_B --security-groups $ALB_SG --scheme internet-facing --type application --tags Key=Name,Value=cloudmart-alb --query 'LoadBalancers[0].LoadBalancerArn' --output text)
+
+cat >> ../resources.env <<EOF
+TG_ARN=$TG_ARN
+ALB_ARN=$ALB_ARN
+EOF
 
 aws elbv2 create-listener --load-balancer-arn $ALB_ARN --protocol HTTP --port 80 --default-actions Type=forward,TargetGroupArn=$TG_ARN
 
@@ -22,8 +32,3 @@ cat > scaling-policy.json <<EOF
 EOF
 
 aws autoscaling put-scaling-policy --auto-scaling-group-name cloudmart-asg-$SUFFIX --policy-name cloudmart-scale-up-$SUFFIX --policy-type TargetTrackingScaling --target-tracking-configuration file://scaling-policy.json
-
-cat >> ../resources.env <<EOF
-TG_ARN=$TG_ARN
-ALB_ARN=$ALB_ARN
-EOF

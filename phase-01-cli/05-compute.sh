@@ -1,6 +1,11 @@
 #!/bin/bash
 set -e
 
+if grep -q "^AMI_ID=" ../resources.env 2>/dev/null; then
+  echo "ERROR: compute already provisioned. Run ./09-cleanup.sh first."
+  exit 1
+fi
+
 source ../resources.env
 
 AMI_ID=$(aws ec2 describe-images --owners amazon --filters "Name=name,Values=al2023-ami-*-x86_64" --query 'Images | sort_by(@, &CreationDate) | [-1].ImageId' --output text)
@@ -32,6 +37,7 @@ for i in {1..30}; do
   echo "Retry \$i: waiting for database..." >> /tmp/db-test.log
   sleep 30
 done
+EOF
 
 cat > launch-template.json <<EOF
 {

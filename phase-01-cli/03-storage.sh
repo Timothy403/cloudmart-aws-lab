@@ -1,6 +1,11 @@
 #!/bin/bash
 set -e
 
+if grep -q "^BUCKET_NAME=" ../resources.env 2>/dev/null; then
+  echo "ERROR: storage already provisioned. Run ./09-cleanup.sh first."
+  exit 1
+fi
+
 source ../resources.env
 
 BUCKET_NAME=cloudmart-static-$SUFFIX

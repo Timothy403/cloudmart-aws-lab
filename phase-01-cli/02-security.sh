@@ -1,6 +1,11 @@
 #!/bin/bash
 set -e
 
+if grep -q "^ALB_SG=" ../resources.env 2>/dev/null; then
+  echo "ERROR: security groups already provisioned. Run ./09-cleanup.sh first."
+  exit 1
+fi
+
 source ../resources.env
 
 ALB_SG=$(aws ec2 create-security-group --group-name cloudmart-alb-sg-$SUFFIX --description "ALB security group" --vpc-id $VPC_ID --query 'GroupId' --output text)

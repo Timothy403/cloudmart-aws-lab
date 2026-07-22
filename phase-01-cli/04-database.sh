@@ -1,11 +1,10 @@
 #!/bin/bash
 set -e
 
-if grep -q DB_IDENTIFIER ../resources.env; then
-  echo "ERROR: database already provisioned. Run cleanup first."
+if grep -q "^DB_IDENTIFIER=" ../resources.env 2>/dev/null; then
+  echo "ERROR: database already provisioned. Run ./09-cleanup.sh first."
   exit 1
 fi
-
 
 source ../resources.env
 
